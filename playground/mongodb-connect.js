@@ -1,6 +1,8 @@
 // const MongoClient = require('mongodb').MongoClient;
 // const {MongoClient} = require('mongodb'); //identical to the above
 
+// node.js mongoDB Driver API
+
 const {MongoClient,ObjectID} = require('mongodb');
 
 //object destructuring (part of es6)
