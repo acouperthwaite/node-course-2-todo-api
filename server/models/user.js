@@ -33,6 +33,7 @@ var UserSchema = new mongoose.Schema({
 });
 
 //not using arrow functions as we need to find 'this' keyword
+//note UserSchema.methods are calls to instance methods (note "user" not "User")
 UserSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
@@ -50,6 +51,28 @@ UserSchema.methods.generateAuthToken = function(){
   return user.save().then(()=>{
     return token;
   });
+};
+
+//note UserSchema.statics are to model methods (note "User" not "user")
+UserSchema.statics.findByToken = function (token) {
+  var User = this;
+  var decoded;
+
+  try{
+    decoded = jwt.verify(token,'abc123');
+  }catch (e) {
+    // return new Promise((resolve,reject)=>{
+    //   reject();
+    // });
+    return Promise.reject(); //same code as above
+  }
+
+  return User.findOne({
+    _id: decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  });
+
 };
 
 var User = mongoose.model('User', UserSchema);
